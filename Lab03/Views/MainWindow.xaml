@@ -1,0 +1,102 @@
+﻿<Window x:Class="Lab03.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Lab03.ViewModels"
+        xmlns:v="clr-namespace:Lab03.Views"
+        Title="Sistema de Gestión de Reservas DB" Height="700" Width="1100"
+        WindowStartupLocation="CenterScreen" Background="#F8FAFC">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:AulasDataTableViewModel}">
+            <v:AulasDataTableView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AulasObjetosViewModel}">
+            <v:AulasObjetosView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ReservasDataTableViewModel}">
+            <v:ReservasDataTableView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ReservasObjetosViewModel}">
+            <v:ReservasObjetosView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:NuevaReservaViewModel}">
+            <v:NuevaReservaView/>
+        </DataTemplate>
+
+        <!-- Estilo Estándar para Botones de Menú -->
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1E293B"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar / Menú Lateral -->
+        <Border Background="#0F172A" Padding="15,20">
+            <DockPanel>
+                <!-- Info de Usuario -->
+                <StackPanel DockPanel.Dock="Top" Margin="0,0,0,25">
+                    <TextBlock Text="RESERVAS" Foreground="White" FontSize="20" FontWeight="Bold"/>
+                    <Border Height="1" Background="#1E293B" Margin="0,12,0,12"/>
+                    <TextBlock Text="SESIÓN ACTIVA" Foreground="#64748B" FontSize="10" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding UsuarioSesion.NombreCompleto, StringFormat='👤 {0}'}" 
+                               Foreground="#E2E8F0" FontSize="13" FontWeight="SemiBold" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Botones de Navegación -->
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Text="MÓDULO AULAS" Foreground="#475569" FontSize="11" FontWeight="Bold" Margin="10,0,0,5"/>
+                    <Button Content="📄 Aulas (DataTable)" Command="{Binding NavAulasDTCommand}" Style="{StaticResource MenuButtonStyle}"/>
+                    <Button Content="📦 Aulas (Objetos)" Command="{Binding NavAulasObjCommand}" Style="{StaticResource MenuButtonStyle}"/>
+
+                    <TextBlock Text="MÓDULO RESERVAS" Foreground="#475569" FontSize="11" FontWeight="Bold" Margin="10,15,0,5"/>
+                    <Button Content="📄 Reservas (DataTable)" Command="{Binding NavReservasDTCommand}" Style="{StaticResource MenuButtonStyle}"/>
+                    <Button Content="📦 Reservas (Objetos)" Command="{Binding NavReservasObjCommand}" Style="{StaticResource MenuButtonStyle}"/>
+
+                    <!-- Botón Destacado Nueva Reserva -->
+                    <Button Content="➕ Nueva Reserva" Command="{Binding NavNuevaReservaCommand}" Margin="0,20,0,0" Height="42" Foreground="White" FontWeight="Bold" Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="8" Background="#4F46E5">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Panel de Contenido Dinámico -->
+        <Border Grid.Column="1" Background="#F8FAFC" Padding="25">
+            <ContentControl Content="{Binding VistaActual}"/>
+        </Border>
+    </Grid>
+</Window>
