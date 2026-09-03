@@ -48,13 +48,15 @@
                     </PasswordBox.Resources>
                 </PasswordBox>
 
-                <!-- Mensaje de Error -->
+                <!-- Mensaje de Error (Corregido) -->
                 <TextBlock Text="{Binding MensajeError}" Foreground="#EF4444" FontSize="12" HorizontalAlignment="Center" 
-                           Margin="0,0,0,15" TextWrapping="Wrap" Visibility="{Binding MensajeError, Converter={x:Null}}"/>
+                           Margin="0,0,0,15" TextWrapping="Wrap"/>
 
                 <!-- Botón Ingresar -->
-                <Button Content="Iniciar Sesión" Command="{Binding LoginCommand}" IsDefault="True"
-                        Height="42" Foreground="White" FontWeight="Bold" FontSize="14" Cursor="Hand" BorderThickness="0">
+                <Button Content="Iniciar Sesión" 
+                        Command="{Binding LoginCommand}" 
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        IsDefault="True" Height="42" Foreground="White" FontWeight="Bold" FontSize="14" Cursor="Hand" BorderThickness="0">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border CornerRadius="8" Background="#4F46E5">

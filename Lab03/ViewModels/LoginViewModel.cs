@@ -1,4 +1,4 @@
-﻿using System.Windows;
+﻿using System;
 using System.Windows.Input;
 using Lab03.Data;
 using Lab03.Models;
@@ -7,27 +7,65 @@ namespace Lab03.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        private readonly UsuarioRepository _usuarioRepo = new();
+        private string _username = string.Empty;
+        private string _password = string.Empty;
+        private string _mensajeError = string.Empty;
+        private readonly Action<Usuario>? _onLoginSuccess;
 
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-
-        public ICommand IngresarCommand { get; }
-
-        public LoginViewModel(Action<Usuario> onLoginSuccess)
+        public string Username
         {
-            IngresarCommand = new RelayCommand(_ =>
+            get => _username;
+            set { _username = value; OnPropertyChanged(); }
+        }
+
+        public string Password
+        {
+            get => _password;
+            set { _password = value; OnPropertyChanged(); }
+        }
+
+        public string MensajeError
+        {
+            get => _mensajeError;
+            set { _mensajeError = value; OnPropertyChanged(); }
+        }
+
+        public ICommand LoginCommand { get; }
+
+        public Usuario? UsuarioAutenticado { get; private set; }
+
+        // Constructor por defecto
+        public LoginViewModel() : this(null) { }
+
+        // Constructor que acepta la acción de navegación/éxito
+        public LoginViewModel(Action<Usuario>? onLoginSuccess)
+        {
+            _onLoginSuccess = onLoginSuccess;
+            LoginCommand = new RelayCommand(EjecutarLogin);
+        }
+
+        private void EjecutarLogin(object? parameter)
+        {
+            MensajeError = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
             {
-                var usuario = _usuarioRepo.ValidarLogin(Username, Password);
-                if (usuario != null)
-                {
-                    onLoginSuccess(usuario);
-                }
-                else
-                {
-                    MessageBox.Show("Usuario o contraseña incorrectos.", "Error de Login", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            });
+                MensajeError = "Por favor ingrese usuario y contraseña.";
+                return;
+            }
+
+            var repo = new UsuarioRepository();
+            var usuario = repo.ValidarLogin(Username, Password);
+
+            if (usuario != null)
+            {
+                UsuarioAutenticado = usuario;
+                _onLoginSuccess?.Invoke(usuario); 
+            }
+            else
+            {
+                MensajeError = "Usuario o contraseña incorrectos.";
+            }
         }
     }
 }
